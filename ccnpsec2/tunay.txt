@@ -1,0 +1,787 @@
+EDGE51#sh run
+Building configuration...
+
+
+Current configuration : 5762 bytes
+!
+! Last configuration change at 02:13:58 UTC Sat Nov 4 2023
+!
+version 16.9
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+platform qfp utilization monitor load 80
+platform punt-keepalive disable-kernel-core
+!
+hostname EDGE51
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition Mgmt-intf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+no logging console
+enable secret 5 $1$KSr.$qt.IauRSXuPHVl5egU8AS0
+!
+no aaa new-model
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+!
+!
+!
+login on-success log
+!
+!
+!
+!
+!         
+!
+!
+subscriber templating
+! 
+! 
+! 
+! 
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+crypto pki trustpoint TP-self-signed-3355624821
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-3355624821
+ revocation-check none
+ rsakeypair TP-self-signed-3355624821
+!
+!
+crypto pki certificate chain TP-self-signed-3355624821
+ certificate self-signed 01
+  30820330 30820218 A0030201 02020101 300D0609 2A864886 F70D0101 05050030 
+  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274 
+  69666963 6174652D 33333535 36323438 3231301E 170D3233 31313033 31333334 
+  33335A17 0D333030 31303130 30303030 305A3031 312F302D 06035504 03132649 
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D33 33353536 
+  32343832 31308201 22300D06 092A8648 86F70D01 01010500 0382010F 00308201 
+  0A028201 01009F37 C3A58CB4 86C7163A 4E9BF56E 020BA6FF F1A71F03 CEB51C44 
+  9831EA73 769C136D E2B4E1C5 8F5A5D41 13A45837 6036BCE7 26B98CAA 6F57F497 
+  0305219F 11EBA4C7 4759100C 4F720754 B1AC24F3 DF57D9BA C795E56D E18AC4D5 
+  A0366F6E 50E8875A EFCA124A 31486AE2 8FA94C94 0007FF22 09FF56EC DF9E4B42 
+  C63BAE58 A517D398 C6D9B8E0 C37C7275 549A4669 F66309F7 38F646BB D2084503 
+  B6740F45 E4CBDD7B 94DA1D83 A1853D24 CCCDBF06 D9395B81 87E16BB4 E1ACF2BA 
+  BA80E9DB B8967076 0DB69A7B CD0F6179 96349B85 BC2FAC58 BB109542 D0DCA7E6 
+  A5FA7ABE D4B9F5DC 3DB068EE DC9E647C 98E2EB49 7ED57CE3 1612251E D1C856D1 
+  A502B0E4 73E70203 010001A3 53305130 0F060355 1D130101 FF040530 030101FF 
+  301F0603 551D2304 18301680 14AE1311 F856685D 2A52F28D A2A6FA16 18AFDCDE 
+  7C301D06 03551D0E 04160414 AE1311F8 56685D2A 52F28DA2 A6FA1618 AFDCDE7C 
+  300D0609 2A864886 F70D0101 05050003 82010100 903B8EFF 75EA491D FEA5D351 
+  F8DE34DE CD8DB3CA 47638938 04686C59 0225A5A2 7712AAE4 B6D8ECF7 2B5B213C 
+  98F1F319 EC385E96 3316C252 6E628903 C11D4315 1A72C090 B9865C48 88B75201 
+  19D47999 F56D4E6A 7CFD7021 3E728DD2 C0B45E43 3FF35D0A 20833722 C0D37D52 
+  1EB10D73 63A0252F 9E1C47D7 60B9726B 0C4B5AB7 84FC3A35 AB07E747 C1D043E2 
+  7A2DE93C BC992838 3B34BDED F01BF169 BF7D218C 0D33B61A 003D5943 E8F828AB 
+  668D0C93 80191877 8647065B D8B02733 E10BA7F8 C4D72BE7 B1E63BD5 00BDAF33 
+  B4BDCC89 FB5909B3 C427A2A5 C2D2864E 84D97C47 C5298F6A 1921E3EA C4DA22C9 
+  161BEE06 15488F95 58336BF7 7F4DC570 6CC6E196
+        quit
+!
+license udi pid ISR4321/K9 sn FDO19150W0P
+no license smart enable
+diagnostic bootup level minimal
+!
+spanning-tree extend system-id
+!
+!
+!
+username admin privilege 15 secret 5 $1$VS.0$5Gwf/FDnsns9rsjmYK0pH.
+!
+redundancy
+ mode none
+!
+crypto ikev2 proposal WEBUI-PROPOSAL-Tunnel1 
+ encryption aes-cbc-256 aes-cbc-192 aes-cbc-128
+ integrity sha512 sha384 sha256 sha1 md5
+ group 2 5
+!
+crypto ikev2 policy WEBUI-POLICY 
+ match fvrf any
+ proposal WEBUI-PROPOSAL-Tunnel1
+!
+crypto ikev2 keyring WEBUI-KEYS
+ peer WEBUI-PEER-200.0.0.42
+  description KEY-PEER-200.0.0.42 
+  address 200.0.0.42 255.255.255.0
+  pre-shared-key 88888888
+ !
+!
+!
+crypto ikev2 profile WEBUI-IKEV2-PROFILE
+ match fvrf any
+ match identity remote address 200.0.0.42 255.255.255.255 
+ authentication remote pre-share
+ authentication local pre-share
+ keyring local WEBUI-KEYS
+!
+!
+!
+!
+!
+!         
+!
+!
+!
+!
+!
+crypto ipsec transform-set WEBUI-TS-Tunnel1 esp-aes esp-sha-hmac 
+ mode tunnel
+!
+crypto ipsec profile WEBUI-IPSEC-PROFILE-Tunnel1
+ set transform-set WEBUI-TS-Tunnel1 
+ set ikev2-profile WEBUI-IKEV2-PROFILE
+!
+!
+!
+!
+!
+!
+! 
+! 
+!
+!
+interface Loopback0
+ description VIRTUALIP
+ ip address 51.0.0.1 255.255.255.255
+!
+interface Tunnel1
+ ip address 172.16.10.10 255.255.255.0
+ tunnel source GigabitEthernet0/0/1
+ tunnel mode ipsec ipv4
+ tunnel destination 200.0.0.42
+ tunnel protection ipsec profile WEBUI-IPSEC-PROFILE-Tunnel1
+!
+interface GigabitEthernet0/0/0
+ description INSIDE
+ ip address 10.51.51.1 255.255.255.0
+ negotiation auto
+!
+interface GigabitEthernet0/0/1
+ description OUTSIDE
+ ip address 200.0.0.51 255.255.255.0
+ negotiation auto
+!
+interface GigabitEthernet0
+ vrf forwarding Mgmt-intf
+ no ip address
+ shutdown 
+ negotiation auto
+!
+ip forward-protocol nd
+ip http server
+ip http authentication local
+ip http secure-server
+ip tftp source-interface GigabitEthernet0
+ip route 10.11.0.0 255.255.0.0 200.0.0.11
+ip route 10.12.0.0 255.255.0.0 200.0.0.12
+ip route 10.21.0.0 255.255.0.0 200.0.0.21
+ip route 10.22.0.0 255.255.0.0 200.0.0.22
+ip route 10.31.0.0 255.255.0.0 200.0.0.31
+ip route 10.32.0.0 255.255.0.0 200.0.0.32
+ip route 10.41.0.0 255.255.0.0 200.0.0.41
+ip route 10.42.0.0 255.255.0.0 200.0.0.42
+ip route 10.42.0.0 255.255.0.0 Tunnel1
+ip route 10.51.0.0 255.255.0.0 10.51.51.4
+ip route 10.52.0.0 255.255.0.0 200.0.0.52
+ip route 10.61.0.0 255.255.0.0 200.0.0.61
+ip route 10.62.0.0 255.255.0.0 200.0.0.62
+ip route 10.71.0.0 255.255.0.0 200.0.0.71
+ip route 10.72.0.0 255.255.0.0 200.0.0.72
+ip route 10.81.0.0 255.255.0.0 200.0.0.81
+ip route 10.82.0.0 255.255.0.0 200.0.0.82
+!
+!
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ exec-timeout 0 0
+ password 7 15020A1F17
+ login
+ transport input none
+ stopbits 1
+line aux 0
+ stopbits 1
+line vty 0 4
+ exec-timeout 0 0
+ password 7 105E080A16
+ login local
+ transport input all
+line vty 5 14
+ exec-timeout 0 0
+ password 7 105E080A16
+ login local
+ transport input all
+!
+!
+!
+!
+!
+!
+end
+
+
+
+
+--------------------------------------------------------------
+
+CUCM-51#sh run
+Building configuration...
+
+
+Current configuration : 4740 bytes
+!
+! Last configuration change at 01:15:01 UTC Sat Nov 4 2023
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname CUCM-51
+!
+boot-start-marker
+boot-end-marker
+!
+!
+no logging console
+enable secret 5 $1$K6fa$Upm2VWyIbxVYRh7.mo4YO0
+!
+no aaa new-model
+!
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+crypto pki token default removal timeout 0
+!
+!
+dot11 syslog
+!
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+voice service voip
+ ip address trusted list
+  ipv4 0.0.0.0 0.0.0.0
+ h323     
+  call start slow
+!
+!
+!
+!
+!
+voice-card 0
+!
+!
+!
+license udi pid C1861E-SRST-C-F/K9 sn FTX181283ZH
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/0
+ ip address 10.51.100.8 255.255.255.0
+ duplex auto
+ speed auto
+!
+interface Integrated-Service-Engine0/0
+ no ip address
+ shutdown
+!
+interface FastEthernet0/1/0
+ no ip address
+!
+interface FastEthernet0/1/1
+ no ip address
+!
+interface FastEthernet0/1/2
+ no ip address
+!
+interface FastEthernet0/1/3
+ no ip address
+!
+interface FastEthernet0/1/4
+ no ip address
+!
+interface FastEthernet0/1/5
+ no ip address
+!
+interface FastEthernet0/1/6
+ no ip address
+!
+interface FastEthernet0/1/7
+ no ip address
+!
+interface FastEthernet0/1/8
+ no ip address
+!
+interface Vlan1
+ no ip address
+!
+ip forward-protocol nd
+no ip http server
+no ip http secure-server
+!
+!
+ip route 0.0.0.0 0.0.0.0 10.51.100.4
+!
+!
+!
+!         
+!
+!
+!
+control-plane
+!
+!
+voice-port 0/0/0
+!
+voice-port 0/0/1
+!
+voice-port 0/0/2
+!
+voice-port 0/0/3
+!
+voice-port 0/1/0
+!
+voice-port 0/1/1
+!
+voice-port 0/1/2
+!
+voice-port 0/1/3
+!
+voice-port 0/4/0
+ auto-cut-through
+ signal immediate
+ input gain auto-control
+ description Music On Hold Port
+!
+!
+!
+mgcp profile default
+!
+!
+dial-peer voice 1 pots
+ destination-pattern 5100
+ port 0/0/0
+!
+dial-peer voice 2 pots
+ destination-pattern 5101
+ port 0/0/1
+!
+dial-peer voice 3 pots
+ destination-pattern 5102
+ port 0/0/2
+!
+dial-peer voice 4 pots
+ destination-pattern 5103
+ port 0/0/3
+!
+dial-peer voice 11 voip
+ destination-pattern 11..
+ session target ipv4:10.11.100.8
+ codec g711ulaw
+!
+dial-peer voice 12 voip
+ destination-pattern 12..
+ session target ipv4:10.12.100.8
+ codec g711ulaw
+!
+dial-peer voice 21 voip
+ destination-pattern 21..
+ session target ipv4:10.21.100.8
+ codec g711ulaw
+!
+dial-peer voice 22 voip
+ destination-pattern 22..
+ session target ipv4:10.22.100.8
+ codec g711ulaw
+!
+dial-peer voice 31 voip
+ destination-pattern 31..
+ session target ipv4:10.31.100.8
+ codec g711ulaw
+!
+dial-peer voice 32 voip
+ destination-pattern 32..
+ session target ipv4:10.32.100.8
+ codec g711ulaw
+!
+dial-peer voice 41 voip
+ destination-pattern 41..
+ session target ipv4:10.41.100.8
+ codec g711ulaw
+!
+dial-peer voice 42 voip
+ destination-pattern 42..
+ session target ipv4:10.42.100.8
+ codec g711ulaw
+!
+dial-peer voice 52 voip
+ destination-pattern 52..
+ session target ipv4:10.52.100.8
+ codec g711ulaw
+!
+dial-peer voice 61 voip
+ destination-pattern 61..
+ session target ipv4:10.61.100.8
+ codec g711ulaw
+!
+dial-peer voice 62 voip
+ destination-pattern 62..
+ session target ipv4:10.62.100.8
+ codec g711ulaw
+!
+dial-peer voice 71 voip
+ destination-pattern 71..
+ session target ipv4:10.71.100.8
+ codec g711ulaw
+!
+dial-peer voice 72 voip
+ destination-pattern 72..
+ session target ipv4:10.72.100.8
+ codec g711ulaw
+!
+dial-peer voice 81 voip
+ destination-pattern 81..
+ session target ipv4:10.81.100.8
+ codec g711ulaw
+!
+dial-peer voice 82 voip
+ destination-pattern 82..
+ session target ipv4:10.82.100.8
+ codec g711ulaw
+!
+!
+!
+!
+telephony-service
+ no auto-reg-ephone
+ max-ephones 5
+ max-dn 20
+ ip source-address 10.51.100.8 port 2000
+ max-conferences 4 gain -6
+ transfer-system full-consult
+ create cnf-files version-stamp Jan 01 2002 00:00:00
+!
+!
+ephone-dn  1
+ number 5111
+!
+!
+ephone-dn  2
+ number 5122
+!         
+!
+ephone-dn  3
+ number 5133
+!
+!
+ephone-dn  4
+ number 5144
+!
+!
+ephone-dn  5
+ number 5155
+!
+!
+ephone-dn  6
+ number 5166
+!
+!
+ephone-dn  7
+ number 5177
+!
+!
+ephone-dn  8
+ number 5188
+!         
+!
+ephone  1
+ device-security-mode none
+ video
+ mac-address CCD8.C1FB.09FF
+ max-calls-per-button 3
+ busy-trigger-per-button 2
+ type 8945
+ button  1:1 2:3 3:2 4:4
+!
+!
+!
+ephone  2
+ device-security-mode none
+ video
+ mac-address CCD8.C1FB.02B7
+ max-calls-per-button 3
+ busy-trigger-per-button 2
+ type 8945
+ button  1:5 2:6 3:7 4:8
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+ password 7 051B071C32
+ login
+line aux 0
+line 2
+ no activation-character
+ no exec
+ transport preferred none
+ transport input all
+ transport output pad telnet rlogin lapb-ta mop udptn v120 ssh
+line vty 0 4
+ exec-timeout 0 0
+ password 7 08314D5D1A
+ login
+ transport input all
+line vty 5 14
+ exec-timeout 0 0
+ password 7 08314D5D1A
+ login
+ transport input all
+!
+end
+
+----------------------------------------------------------------------------------------------x
+
+
+ COREbaba51#sh run
+Building configuration...
+
+Current configuration : 4232 bytes
+!
+version 15.0
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname COREbaba51
+!
+boot-start-marker
+boot-end-marker
+!
+!
+no logging console
+enable secret 5 $1$D338$GHP7wqVThuF3e3rs7GFg2/
+!
+no aaa new-model
+system mtu routing 1500
+ip routing
+no ip domain-lookup
+!
+ip dhcp excluded-address 10.51.1.1 10.51.1.100
+ip dhcp excluded-address 10.51.10.1 10.51.10.100
+ip dhcp excluded-address 10.51.50.1 10.51.50.100
+ip dhcp excluded-address 10.51.100.1 10.51.100.100
+!
+ip dhcp pool MGMTDATA
+ network 10.51.1.0 255.255.255.0
+ default-router 10.51.1.4 
+ domain-name MGMTDATA.COM
+ dns-server 10.51.1.10 
+!
+ip dhcp pool WIFIDATA
+ network 10.51.10.0 255.255.255.0
+ default-router 10.51.10.4 
+ domain-name WIFIDATA.COM
+ dns-server 10.51.1.10 
+!
+ip dhcp pool IPCCTV
+ network 10.51.50.0 255.255.255.0
+ default-router 10.51.50.4 
+ domain-name IPCCTV.COM
+ dns-server 10.51.1.10 
+!
+ip dhcp pool VOICEVLAN
+ network 10.51.100.0 255.255.255.0
+ default-router 10.51.100.4 
+ domain-name VOICEVLAN.COM
+ dns-server 10.51.1.10 
+ option 150 ip 10.51.100.8 
+!
+!
+!
+!
+crypto pki trustpoint TP-self-signed-1927895552
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-1927895552
+ revocation-check none
+ rsakeypair TP-self-signed-1927895552
+!
+!
+crypto pki certificate chain TP-self-signed-1927895552
+ certificate self-signed 01
+  3082022B 30820194 A0030201 02020101 300D0609 2A864886 F70D0101 05050030 
+  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274 
+  69666963 6174652D 31393237 38393535 3532301E 170D3933 30333031 30303031 
+  31315A17 0D323030 31303130 30303030 305A3031 312F302D 06035504 03132649 
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D31 39323738 
+  39353535 3230819F 300D0609 2A864886 F70D0101 01050003 818D0030 81890281 
+  8100BB31 3EE37709 25D002AF 36913F85 50607C0F 2250D9C2 C571CCE2 0EBD6E60 
+  9826F3AC BADEEA34 00CC76DE F1984DC2 15434DB3 CB6C8D21 B58E523E B6B5AFCC 
+  09AD5351 6EE2AD79 56F49672 5ED4EA13 ED919A0A 9326D4DA D78FDD73 84D702BA 
+  F3DD8C95 90A59CED 85A2E42D 53EA97FD B54E117B ADAA129D 62EA9D42 FC2D93CC 
+  A5FB0203 010001A3 53305130 0F060355 1D130101 FF040530 030101FF 301F0603 
+  551D2304 18301680 144526B7 6C3B452A 3F8E3BFA 4CB67FA0 A51B0133 EE301D06 
+  03551D0E 04160414 4526B76C 3B452A3F 8E3BFA4C B67FA0A5 1B0133EE 300D0609 
+  2A864886 F70D0101 05050003 8181003A A51EA57F 49F52C9C 480413D6 D29357CD 
+  D13BEAA0 EFDEEBEA 83B40A8B 7E3C2991 1C4D5F06 B2BA527D A30F20DF 9BB5202E 
+  B164CF01 9E606A78 76AF0DC3 AEAEC76D 7EC86F48 CCDF2A35 293EECA2 FC006B84 
+  2881F800 B1ACEA6C CA969CA4 DAE81884 6F77965C 054F3E82 623C7758 FF4D9D86 
+  0901B027 16ABEEB0 20E00D75 7D6765
+        quit
+!
+!
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/1
+!
+interface FastEthernet0/2
+ switchport access vlan 10
+ switchport mode access
+!
+interface FastEthernet0/3
+ switchport access vlan 100
+ switchport mode access
+!
+interface FastEthernet0/4
+ switchport access vlan 10
+ switchport mode access
+!
+interface FastEthernet0/5
+ switchport access vlan 100
+ switchport mode access
+!
+interface FastEthernet0/6
+ switchport access vlan 50
+ switchport mode access
+!
+interface FastEthernet0/7
+ switchport access vlan 100
+ switchport mode access
+!
+interface FastEthernet0/8
+ switchport access vlan 50
+ switchport mode access
+!
+interface FastEthernet0/9
+!
+interface FastEthernet0/10
+!
+interface FastEthernet0/11
+!
+interface FastEthernet0/12
+!
+interface GigabitEthernet0/1
+ no switchport
+ ip address 10.51.51.4 255.255.255.0
+!
+interface Vlan1
+ description MGMTDATA
+ ip address 10.51.1.4 255.255.255.0
+!
+interface Vlan10
+ description WIRELESS
+ ip address 10.51.10.4 255.255.255.0
+!
+interface Vlan50
+ description IPCCTV
+ ip address 10.51.50.4 255.255.255.0
+!         
+interface Vlan100
+ description VOICEVLAN
+ ip address 10.51.100.4 255.255.255.0
+!
+ip http server
+ip http secure-server
+!
+!
+ip route 0.0.0.0 0.0.0.0 10.51.51.1
+!
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+ password 7 08314D5D1A
+ login
+line vty 0 4
+ exec-timeout 0 0
+ password 7 0216054818
+ login
+line vty 5 14
+ exec-timeout 0 0
+ password 7 0216054818
+ login
+line vty 15
+ login
+!
+end

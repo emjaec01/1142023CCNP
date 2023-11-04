@@ -1,0 +1,135 @@
+TAKE NOTE:
+LUMABAS SA EXAM:
+LISP: LOCATOR/ IDENTIFIER SEPARATION PROTOCOL:
+kung ayaw mo mag site2siteVPN, IP-VPN, VxLAN.
+ikaw ay mag LISP. reduces routing table size to 1/5
+
+R1,R2,R3:
+conf t
+int gi 1
+ip add dhcp
+no shut
+do sh ip int br
+
+R1: 192.168.108.162
+R2: 192.168.108.163
+R3: 192.168.108.164
+
+conf t
+cdp run
+no logging console
+no ip domain-lookup
+line vty 0 14
+ exec-timeout 0 0
+int gi 2
+ no shut
+ cdp enable
+int gi 3
+ no shut
+ cdp enable
+end
+
+R2:
+conf t
+router ospf 1
+	network 2.2.2.2 0.0.0.0 area 0
+	network 130.0.0.2 0.0.0.0 area 0 !nagmamadaling ospf 0.0.0.0 wildcard
+	network 140.0.0.2 0.0.0.0 area 0
+int lo0
+	ip add 2.2.2.2 255.255.255.255
+int gi 2
+	ip add 130.0.0.2 255.255.255.0
+int gi 3
+	ip add 140.0.0.2 255.255.255.0
+end
+R1:
+conf t
+router ospf 1
+	network 130.0.0.1 0.0.0.0 area 0
+int lo0
+	ip add 1.1.1.1 255.255.255.255
+int gi 2
+	ip add 130.0.0.1 255.255.255.0
+end
+R3:
+conf t
+router ospf 1
+	network 140.0.0.3 0.0.0.0 area 0
+int lo0
+	ip add 3.3.3.3 255.255.255.255
+int gi 3
+	ip add 140.0.0.3 255.255.255.0
+end
+
+----------------------
+CONFIGURING LISPSERVER:
+R2: LISP Map Server: Knows everyone:
+conf t
+router lisp
+ipv4 map-server
+ipv4 map-resolver
+!
+lisp site siteR3
+	eid-prefix 3.3.3.3/32
+	authentication-key rivansite3
+!
+lisp site siteR1
+	eid-prefix 1.1.1.1/32
+	authentication-key rivansite1
+!
+ip lisp map-server
+ip lisp map-resolver
+!
+end
+show lisp site summary
+show ip lisp map-cache
+show ip lisp database
+end
+--------------------------------
+R1/R3:=
+ITR=ingressTunnelRouter
+ETR=egressTunnelRouter
+R1:
+conf t
+router lisp
+database-mapping 1.1.1.1/32 130.0.0.1 priority 1 weight 100
+ipv4 itr
+ipv4 itr map-resolver 2.2.2.2
+ipv4 etr
+ipv4 etr map-server 2.2.2.2 key rivansite1
+end
+R3:
+conf t
+router lisp
+database-mapping 3.3.3.3/32 140.0.0.3 priority 1 weight 100
+ipv4 itr
+ipv4 itr map-resolver 2.2.2.2
+ipv4 etr
+ipv4 etr map-server 2.2.2.2 key rivansite3
+end
+
+https://sandboxdnac.cisco.com/dna/home
+Cisco Digital Network Architecture
+user: devnetuser
+pw: Cisco123!
+
+Signal monitoring:
+Assurance > Health
+Adding new device:
+Policy
+
+FINAL TASK:
+Best Christmas Gift ever = CCNP by 2023
+ENCOR + ENARSI by December
+1. Hands-on: IP VPN:
+Rsthayup:
+ipv4
+ipv6
+2.JSON, Python, PostMAN,BASH -> csr100v
+3.Reviewer
+
+pearsonvue.com ccnp exam
+
+
+
+
