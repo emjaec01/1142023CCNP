@@ -1,0 +1,19 @@
+ALL ABOUT VPNs:
+ENCOR: Site-to-site IPSec vpn
+
+ENARSI: MPLS VRF MBGP VPN. enjoy.
+
+Task1: Know your network.
+1. pc: ping 10.m.1.10
+2. gateway: ping 10.m.1.4
+3. cucm: 10.m.m.1
+4. edge: 200.0.0.m
+5. katabi: 200.0.0.k
+6. katabi: 10.k.k.4
+7. katabi: 10.k.1.4
+8. katabi: 10.k.1.10
+
+tracert -d 10.k.1.10
+
+ENCOR + SCOR
+
